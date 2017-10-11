@@ -1,6 +1,6 @@
 package com.jdbc.database;
 
-public class Student {
+public class Student{
 	
 		private int flowID;
 		private int type;

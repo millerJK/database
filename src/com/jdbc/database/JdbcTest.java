@@ -45,7 +45,6 @@ public class JdbcTest {
 		
 	}
 	
-	
 	@Test
 	public void update2(){
 		Student student = new Student(9,6,"234234","112323","æ≤œ„","»’±æ",234);
@@ -63,6 +62,14 @@ public class JdbcTest {
 	}
 	
 	@Test
+	public void query2(){
+		String sql = "SELECT FlowID AS flowID,Type AS type,IdCard AS idCard,ExamCard AS examId,StudentName AS studentName, Location AS location ,Grade AS grade FROM examstudent WHERE type = ? ";
+		ArrayList<Student> lists = (ArrayList<Student>) JdbcUtils.query(Student.class, sql, 6);
+		System.out.println(lists.toString());
+	}
+	
+	
+	@Test
 	public void query(){
 		
 		String sql = "SELECT * FROM examstudent WHERE FlowID = '12'";
@@ -71,7 +78,6 @@ public class JdbcTest {
 		if(connection == null)
 			return;
 		try {
-//			Statement statement = connection.createStatement();
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.executeQuery();
 			ResultSet set = statement.executeQuery(sql);
@@ -95,7 +101,7 @@ public class JdbcTest {
 		}
 	}
 	
-	
+/**---------------------------------------------------------------------------------------------------------------**/
 
 	private Student getDataFromConsole() {
 		// TODO Auto-generated method stub
