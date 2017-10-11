@@ -3,6 +3,7 @@ package com.jdbc.database;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,6 +20,11 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.print.attribute.standard.PresentationDirection;
+
+
+
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import com.mysql.jdbc.StringUtils;
 
@@ -113,7 +119,7 @@ public class JdbcUtils {
 	 * @param
 	 * @param params
 	 */
-	public static void add(String tableName, Object... params) {
+	public static void insert(String tableName, Object... params) {
 
 		int length = params.length;
 		if (length == 0 || isNullOrEmpty(tableName))
@@ -134,7 +140,6 @@ public class JdbcUtils {
 		}
 		builder.deleteCharAt(builder.toString().length() - 1).append(")");
 		sql = builder.toString();
-		System.out.println(sql);
 		try {
 			statement = connection.prepareStatement(sql);
 			for (int i = 0; i < length; i++) {
@@ -232,8 +237,7 @@ public class JdbcUtils {
 				preparedStatement.setObject((i + 1), params[i]);
 			}
 
-			preparedStatement.executeQuery();
-			resultSet = preparedStatement.getResultSet();
+			resultSet = preparedStatement.executeQuery();
 			resultSetMetaData = resultSet.getMetaData();
 			int colunmLenght = resultSetMetaData.getColumnCount();
 			
@@ -242,7 +246,8 @@ public class JdbcUtils {
 				for (int i = 1; i <= colunmLenght; i++) {
 					String label = resultSetMetaData.getColumnLabel(i);
 					Object value = resultSet.getObject(i);
-					t = reflect(t, label, value);
+//					t = reflect(t, label, value); 使用反射也是可以的。
+					BeanUtils.setProperty(t, label, value);
 				}
 				lists.add(t);
 			}
@@ -258,7 +263,10 @@ public class JdbcUtils {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		releaseDb(preparedStatement, resultSet, connection);
 		return lists;
 
