@@ -5,6 +5,9 @@
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.44-bin.jar" sourcepath="F:/database-source/mysql-connector-java-5.1.44/src"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.9.3.jar" sourcepath="F:/web_lib/commons-beanutils-1.9.3-bin/commons-beanutils-1.9.3/commons-beanutils-1.9.3-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar" sourcepath="F:/web_lib/commons-dbcp2-2.1.1-src/src"/>
+	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar" sourcepath="F:/web_lib/commons-pool2-2.4.2-src/src"/>
+	<classpathentry kind="lib" path="lib/commons-dbutils-1.7.jar" sourcepath="F:/web_lib/commons-dbutils-1.7-src/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
