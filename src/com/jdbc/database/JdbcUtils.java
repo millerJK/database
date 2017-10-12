@@ -20,31 +20,32 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.print.attribute.standard.PresentationDirection;
-
-
-
+import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSourceFactory;
+import org.junit.Test;
 
 import com.mysql.jdbc.StringUtils;
 
 public class JdbcUtils {
-	
-	
-	public static void beginTx(Connection connection){
-		if(connection != null){
+
+	public static void beginTx(Connection connection) {
+		if (connection != null) {
 			try {
 				connection.setAutoCommit(false);
-				connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+				connection
+						.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public static void commit(Connection connection){
-		if(connection != null){
+
+	public static void commit(Connection connection) {
+		if (connection != null) {
 			try {
 				connection.commit();
 			} catch (SQLException e) {
@@ -53,10 +54,10 @@ public class JdbcUtils {
 			}
 		}
 	}
-	
-	public static void rollBack(Connection connection){
-		
-		if(connection != null){
+
+	public static void rollBack(Connection connection) {
+
+		if (connection != null) {
 			try {
 				connection.rollback();
 			} catch (SQLException e) {
@@ -66,6 +67,13 @@ public class JdbcUtils {
 		}
 	}
 
+	/**
+	 * 每请求一次都创建一个Connection对象，不利于Connection对象回收，同时也消耗系统资源，请使用
+	 * {@link # getConnection2()}
+	 * 
+	 * @return
+	 */
+	@Deprecated
 	public static Connection getConnection() {
 
 		Connection connection = null;
@@ -80,19 +88,43 @@ public class JdbcUtils {
 			String jdbcUrl = properties.getProperty("jdbcUrl");
 			Class.forName(driver);
 			connection = DriverManager.getConnection(jdbcUrl, user, password);
-			return connection;
 		} catch (IOException | ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return connection;
 
-		return null;
+	}
+	
+	/**
+	 * 采用dbcp的形式获取connection
+	 * @return
+	 */
+	public static Connection getConnection2() {
+		
+		Connection connection = null;
+		try {
+			InputStream inStream = JdbcUtils.class.getResourceAsStream("dbcp.properties");
+			Properties properties = new Properties();
+			properties.load(inStream);
+			DataSource dataSource = BasicDataSourceFactory.createDataSource(properties);
+			System.out.println(((BasicDataSource)dataSource).getMaxWaitMillis());
+			connection = dataSource.getConnection();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return connection;
 
 	}
 
 	/**
-	 * 增加 删除 修改 ，不能进行查询
-	 * 不推荐使用，Statement有sql注入的风险,请使用{@link #update(String, Object...)}}
+	 * 增加 删除 修改 ，不能进行查询 不推荐使用，Statement有sql注入的风险,请使用
+	 * {@link #update(String, Object...)}
+	 * 
 	 * @param sql
 	 */
 	@Deprecated
@@ -276,13 +308,13 @@ public class JdbcUtils {
 			resultSet = preparedStatement.executeQuery();
 			resultSetMetaData = resultSet.getMetaData();
 			int colunmLenght = resultSetMetaData.getColumnCount();
-			
+
 			while (resultSet.next()) {
 				T t = (T) clazz.forName(clazz.getName()).newInstance();
 				for (int i = 1; i <= colunmLenght; i++) {
 					String label = resultSetMetaData.getColumnLabel(i);
 					Object value = resultSet.getObject(i);
-//					t = reflect(t, label, value); 使用反射也是可以的。
+					// t = reflect(t, label, value); 使用反射也是可以的。
 					BeanUtils.setProperty(t, label, value);
 				}
 				lists.add(t);
@@ -302,7 +334,7 @@ public class JdbcUtils {
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		releaseDb(preparedStatement, resultSet, connection);
 		return lists;
 

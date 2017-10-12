@@ -66,8 +66,8 @@ public class DbUtilsTest {
 //			queryRunner.query(connection, sql, new BeanHandler(Student.class));//BeanHandler  把结果集的第一条就转换为创建的BeanHandler对象传入的class.
 //			List<Student> lists = (List<Student>) queryRunner.query(connection, sql, new BeanListHandler(Student.class));//BeanHandler  
 			Map<String ,Object> lists = queryRunner.query(connection, sql, new MapHandler());//返回sql 对相应的第一条记录对应的map对象
-			queryRunner.query(connection, sql, new MapListHandler());//返回sql 对相应的第一条记录对应的map对象
-			
+			queryRunner.query(connection, sql, new MapListHandler());//将结果转换为一个map的list，map对应查询的一条记录
+		//ScalarHandler() 把结果集转换为一个数值（可以是任意基本类型）
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
