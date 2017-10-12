@@ -92,12 +92,6 @@ public class DatabasePoolTest {
 	@Test
 	public void getConnection(){
 		Connection connection = JdbcUtils.getConnection2();
-		try {
-			System.out.println(connection.getNetworkTimeout());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		System.out.println(connection);
 	}
 

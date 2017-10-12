@@ -95,20 +95,22 @@ public class JdbcUtils {
 		return connection;
 
 	}
-	
+
 	/**
-	 * 采用dbcp的形式获取connection
+	 * 采用dbcp的形式获取connection,其中最大连接数等参数可以在jdbc。properies文件中进行配置
+	 * 
 	 * @return
 	 */
 	public static Connection getConnection2() {
-		
+
 		Connection connection = null;
 		try {
-			InputStream inStream = JdbcUtils.class.getResourceAsStream("dbcp.properties");
+			InputStream inStream = JdbcUtils.class
+					.getResourceAsStream("dbcp.properties");
 			Properties properties = new Properties();
 			properties.load(inStream);
-			DataSource dataSource = BasicDataSourceFactory.createDataSource(properties);
-			System.out.println(((BasicDataSource)dataSource).getMaxWaitMillis());
+			DataSource dataSource = BasicDataSourceFactory
+					.createDataSource(properties);
 			connection = dataSource.getConnection();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
