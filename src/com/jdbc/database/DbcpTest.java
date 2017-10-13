@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author wangning
  *
  */
-public class DatabasePoolTest {
+public class DbcpTest {
 
 	@Test
 	public void dbcpTest() {

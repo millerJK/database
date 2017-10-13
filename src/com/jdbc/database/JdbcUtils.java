@@ -109,8 +109,7 @@ public class JdbcUtils {
 					.getResourceAsStream("dbcp.properties");
 			Properties properties = new Properties();
 			properties.load(inStream);
-			DataSource dataSource = BasicDataSourceFactory
-					.createDataSource(properties);
+			DataSource dataSource = BasicDataSourceFactory.createDataSource(properties);
 			connection = dataSource.getConnection();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -158,7 +157,7 @@ public class JdbcUtils {
 	 */
 	public static void update(String sql, Object... params) {
 
-		Connection connection = getConnection();
+		Connection connection = getConnection2();
 		PreparedStatement statement = null;
 
 		if (connection == null)
@@ -316,7 +315,7 @@ public class JdbcUtils {
 				for (int i = 1; i <= colunmLenght; i++) {
 					String label = resultSetMetaData.getColumnLabel(i);
 					Object value = resultSet.getObject(i);
-					// t = reflect(t, label, value); 使用反射也是可以的。
+//					 t = reflect(t, label, value); 
 					BeanUtils.setProperty(t, label, value);
 				}
 				lists.add(t);
@@ -350,7 +349,7 @@ public class JdbcUtils {
 	 * @param label
 	 * @param value
 	 */
-	private static <T> T reflect(T t, String label, Object value) {
+	public static <T> T reflect(T t, String label, Object value) {
 
 		Class<?> obj = t.getClass();
 		Field[] fields = obj.getDeclaredFields();// 获取类中定义的成员变量即使修饰符是private也是可以获取的到
@@ -395,7 +394,7 @@ public class JdbcUtils {
 
 		if (connection != null) {
 			try {
-				connection.close();
+				connection.close();//采用dbcp形式形式，获取Connection连接数，执行close 操作仅仅是讲连接和服务器断开，然后dbcp回收连接数
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

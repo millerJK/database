@@ -65,7 +65,6 @@ public class BatchTest {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-
 		}
 
 		JdbcUtils.releaseDb(statement, null, connection);
